@@ -21,3 +21,12 @@ model User {
   password String 
   createdAt DateTime @default(now())
 }
+
+model Student{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String @unique
+  age Int
+  course String
+  year Int
+  subjects String[]
+}

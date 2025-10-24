@@ -129,14 +129,25 @@ export async function GET(req:Request) {
     const page =  Number(searchParams.get("page") || "1" );
     const limit =  Number(searchParams.get("limit") || "10");
 
-    const user = await prisma.student.findMany({
-      skip: (page - 1) * limit,
-      take: limit,
-      orderBy: {
-        name: "asc"
-      }
-    });
-    return NextResponse.json({Succesful: true, user}, {status:200});
+    // const user = await prisma.student.findMany({
+    //   skip: (page - 1) * limit,
+    //   take: limit,
+    //   orderBy: {
+    //     name: "asc"
+    //   }
+    // });
+    const [user, total] = await Promise.all([
+      prisma.student.findMany({
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: {
+          name: "asc"
+        }
+      }),
+      prisma.student.count(),
+    ])
+    const totalPage = Math.ceil(total / limit);
+    return NextResponse.json({Succesful: true, user, total, totalPage}, {status:200});
 
 
   } 

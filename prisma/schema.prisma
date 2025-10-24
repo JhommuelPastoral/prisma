@@ -30,3 +30,12 @@ model Student{
   year Int
   subjects String[]
 }
+
+model Products{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  category String
+  price Int
+  stock Int
+}
+

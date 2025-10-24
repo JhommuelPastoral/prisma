@@ -37,5 +37,14 @@ model Products{
   category String
   price Int
   stock Int
+  rating Int[]
+  supplierId String @db.ObjectId
+  supplier Supplier @relation(fields: [supplierId], references: [id])
 }
 
+model Supplier{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  country String
+  products Products[]
+}

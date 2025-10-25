@@ -48,3 +48,39 @@ model Supplier{
   country String
   products Products[]
 }
+
+
+
+
+
+model Team{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  members Member[]
+}
+
+model Member{
+ id String @id @default(auto()) @map("_id") @db.ObjectId
+ name String
+ role String
+ teamId String @db.ObjectId
+ team Team @relation(fields: [teamId], references: [id])
+ message Message[]
+}
+
+model Message{
+ id String @id @default(auto()) @map("_id") @db.ObjectId
+ content String 
+ createdAt DateTime @default(now())
+ reactions Reaction[]
+ memberId String @db.ObjectId
+ member Member @relation(fields: [memberId], references: [id])
+
+}
+
+model Reaction{
+ id String @id @default(auto()) @map("_id") @db.ObjectId
+ emoji String
+ messageId String @db.ObjectId
+ message Message @relation(fields: [messageId], references: [id])
+}

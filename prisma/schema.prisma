@@ -98,12 +98,12 @@ model Post{
 
 model Likes{
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  postId String @db.ObjectId
+  postId String? @db.ObjectId
+  commentId String? @db.ObjectId
   userId String @db.ObjectId
   post Post? @relation(fields: [postId], references: [id])
   user User @relation(fields: [userId], references: [id])
-  commentId String @db.ObjectId
-  comments Comments @relation(fields: [commentId], references: [id])
+  comments Comments? @relation(fields: [commentId], references: [id])
 }
 
 

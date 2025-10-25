@@ -62,9 +62,8 @@ export async function GET(req:Request) {
         commentCount: post._count.comments,
         likeCount: post._count.likes,
         engagementScore
-        
       }
-    });
+    }).sort((a,b) => b.engagementScore - a.engagementScore).slice(0,5);
 
     return NextResponse.json({message:"Post created", highestEngagment}, {status:200});
   } catch (error) {

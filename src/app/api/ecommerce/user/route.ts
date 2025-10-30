@@ -20,3 +20,19 @@ export async function POST(req:Request){
     return NextResponse.json({message:"Something went wrong"}, {status:500});
   }
 }
+
+export async function GET() {
+  try {
+    const users = await prisma.userEcomnmerce.findMany({
+      include:{orders: {
+        include:{items: true}
+      }, cart: {
+        include:{items: true}
+      }}
+    });
+    return NextResponse.json({users, successful: true}, {status:200});
+  } catch (error) {
+    console.log("Get users error", error);
+    return NextResponse.json({message:"Something went wrong", sucessful: false}, {status:500});
+  }
+}

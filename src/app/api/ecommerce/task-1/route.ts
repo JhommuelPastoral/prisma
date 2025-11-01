@@ -18,7 +18,6 @@ export async function GET() {
       by: ["productId"],
       _sum: {
         quantity: true,
-        priceAtBuy: true
       },
       _count: {
         id: true
@@ -34,26 +33,48 @@ export async function GET() {
       },
       select: {
         name: true,
-        id: true
+        id: true,
+        category: true,
+        orderItems: true
       }
     });
 
     const result = groupIds.map((group) => {
       const product = products.find((product) => product.id === group.productId);
       if(!product) return null;
+      const revenue = product.orderItems.reduce((total, item) => total + (item.priceAtBuy * item.quantity), 0);
+
       return {
         name: product.name,
-        unitsSold: group._count.id,
-        revenue: Number(((group._sum.priceAtBuy ? group._sum.priceAtBuy : 0 )* (group._sum.quantity ? group._sum.quantity : 0)).toFixed(2)),
+        unitsSold: group._sum.quantity,
+        revenue: Number(revenue.toFixed(2)),
       }
     }).sort((a:any, b:any) => b.revenue - a.revenue).slice(0, 10);
 
+    const salesByCategory : Record<string, {category: string, revenue: number}> = {}
 
+    for (const product of products) {
+      const category = product.category;
+      const revenue = product.orderItems.reduce(
+        (total, item) => total + (item.priceAtBuy * item.quantity),
+        0
+      );
+
+      if (salesByCategory[category]) {
+        salesByCategory[category].revenue = Number((revenue + salesByCategory[category].revenue).toFixed(2) );
+      } else {
+        salesByCategory[category] = {
+          category,
+          revenue
+        };
+      }
+    }
 
     const task1 = {
       totalRevenue: Number(totalOrder._sum.total.toFixed(2)),
       averageOrderValue,
-      topProducts: result
+      topProducts: result,
+      salesByCategory: Object.values(salesByCategory).sort((a:any, b:any) => b.revenue - a.revenue)
     }
  
 

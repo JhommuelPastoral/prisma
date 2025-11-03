@@ -189,3 +189,10 @@ model OrderItem{
   order Order @relation(fields: [orderId], references: [id])
 }
 
+
+model RedisUser{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  age Int
+}
+

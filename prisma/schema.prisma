@@ -194,5 +194,6 @@ model RedisUser{
   id String @id @default(auto()) @map("_id") @db.ObjectId
   name String
   age Int
+  expiresAfter DateTime @default(now())
 }
 

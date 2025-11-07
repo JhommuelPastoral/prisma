@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { redis } from "@/lib/redis";
 import prisma from "@/lib/prisma";
 
 export async function POST(req: Request) {
@@ -15,3 +14,13 @@ export async function POST(req: Request) {
   
 }
 
+
+export async function GET(req:Request) {
+  try {
+    const ip = req.headers.get("x-forwarded-for")?.replace("::ffff:","");
+    return NextResponse.json({message:"User fetched", ip}, {status:200});
+  } catch (error) {
+    console.log("Get user error", error);
+    return NextResponse.json({message:"Something went wrong"}, {status:500});
+  }
+}

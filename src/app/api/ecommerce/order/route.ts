@@ -29,7 +29,7 @@ function generateRandomOrderItems(products: ProductsInterface[]) : OrderItemsInt
   return items;
 }
 
-export async function POST(req:Request) {
+export async function POST() {
  try {
   const users = await prisma.userEcomnmerce.findMany();
   const products = await prisma.product.findMany();
@@ -62,10 +62,10 @@ export async function GET() {
 }
 
 
-export async function DELETE(req: Request) {
+export async function DELETE() {
   try {
-    const items = await prisma.orderItem.deleteMany({});
-    const orders = await prisma.order.deleteMany({});
+    // const items = await prisma.orderItem.deleteMany({});
+    // const orders = await prisma.order.deleteMany({});
 
     return NextResponse.json({message:"Orders deleted", successful: true}, {status:200});
   } catch (error) {

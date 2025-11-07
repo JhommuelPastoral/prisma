@@ -1,6 +1,17 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
+type ProductResult ={
+  name: string;
+  unitsSold: number;
+  revenue: number;
+}
+
+type CategoryRevenue = {
+  category: string;
+  revenue: number;
+};
+
 export async function GET() {
   try {
     const totalOrder = await prisma.order.aggregate({
@@ -39,17 +50,17 @@ export async function GET() {
       }
     });
 
-    const result = groupIds.map((group) => {
+    const result :ProductResult[] = groupIds.map((group) => {
       const product = products.find((product) => product.id === group.productId);
       if(!product) return null;
       const revenue = product.orderItems.reduce((total, item) => total + (item.priceAtBuy * item.quantity), 0);
 
       return {
         name: product.name,
-        unitsSold: group._sum.quantity,
+        unitsSold: group._sum.quantity ?? 0,
         revenue: Number(revenue.toFixed(2)),
       }
-    }).sort((a:any, b:any) => b.revenue - a.revenue).slice(0, 10);
+    }).filter((item) => item !== null).sort((a:ProductResult, b:ProductResult) => b.revenue - a.revenue).slice(0, 10);
 
     const salesByCategory : Record<string, {category: string, revenue: number}> = {}
 
@@ -74,7 +85,7 @@ export async function GET() {
       totalRevenue: Number(totalOrder._sum.total.toFixed(2)),
       averageOrderValue,
       topProducts: result,
-      salesByCategory: Object.values(salesByCategory).sort((a:any, b:any) => b.revenue - a.revenue)
+      salesByCategory: Object.values(salesByCategory).sort((a:CategoryRevenue, b:CategoryRevenue) => b.revenue - a.revenue)
     }
  
 

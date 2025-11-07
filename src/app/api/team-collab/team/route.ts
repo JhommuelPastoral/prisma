@@ -1,6 +1,16 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
+type Team= {
+  team: string;
+  members: Member[];
+}
+
+type Member = {
+  name: string;
+  messages: number;
+  score: number
+}
 export async function POST(req:Request) {
   try {
     const {team} = await req.json();
@@ -17,7 +27,7 @@ export async function POST(req:Request) {
   }
 }
 
-export async function GET(req:Request) {
+export async function GET() {
   try {
     const teams = await prisma.team.findMany({
       include:{members:{
@@ -30,10 +40,10 @@ export async function GET(req:Request) {
         }}
       }}
     });
-    const topTeamMembers : any = [];
+    const topTeamMembers : Team[] = [];
     for(const team of teams){
       if(team.members.length < 3) continue;
-      const topThreeMembers : any = [];
+      const topThreeMembers : Member[] = [];
       team.members.forEach(member => {
         const totalReaction = member.message.reduce((acc, message) => acc += message.reactions.length, 0)
         const engagementScore = (member.message.length * 2) + totalReaction;
@@ -46,7 +56,7 @@ export async function GET(req:Request) {
           topThreeMembers.push(data);
         }
       });
-      topThreeMembers.sort((a:any,b:any) => b.score - a.score);
+      topThreeMembers.sort((a:Member,b:Member) => b.score - a.score);
       const data = {
         team : team.name,
         members : topThreeMembers.slice(0,3)

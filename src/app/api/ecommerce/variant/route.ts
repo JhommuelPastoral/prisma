@@ -113,7 +113,7 @@ function getCategory(category: string) {
   }
 
 }
-export async function POST(req:Request) {
+export async function POST() {
 
   try {
     const products = await prisma.product.findMany();

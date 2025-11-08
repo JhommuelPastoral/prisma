@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
+// Monday Task 
+// Rate Limiter
+// Explore some commands
 export async function POST(req: Request) {
   try {
     const {name, age} = await req.json();

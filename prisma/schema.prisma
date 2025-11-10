@@ -197,3 +197,30 @@ model RedisUser{
   expiresAfter DateTime @default(now())
 }
 
+model Rider{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  pickUp Json
+  destination Json
+  createdAt DateTime @default(now())
+}
+
+
+model Driver{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  location Json
+  createdAt DateTime @default(now())
+
+}
+model Ride{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  riderId String @db.ObjectId 
+  driverId String @db.ObjectId
+  pickup Json
+  destination Json
+  status String
+  createdAt DateTime @default(now())
+
+
+}

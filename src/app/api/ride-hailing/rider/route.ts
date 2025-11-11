@@ -2,6 +2,10 @@ import { redis } from "@/lib/redis";
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
+// Toms task 
+// Add the logic for ride
+// Scan all the near diver
+
 export async function POST(req:Request){
   try {
     const {riders} = await req.json();
